@@ -72,7 +72,7 @@ frontend https
         {% for name, config in haproxy_redirects.items() %}
 
         acl is_{{ config['domain'] }} hdr_beg(host) -i {{ config['domain'] }}
-        redirect prefix https://{{ config['destination'] }} if is_{{ config['domain'] }}
+        redirect prefix {{ config['destination'] }} if is_{{ config['domain'] }}
         {% endfor %}
         {% for backend, config in haproxy_backends.items() %}
 

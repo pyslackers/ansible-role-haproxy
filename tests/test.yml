@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  vars:
+    default_backend: test
+    haproxy_backends:
+      test:
+        domain: test.example.com
+        letsencrypt: no
+        servers:
+          test-01: 127.0.0.1:8000
+          test-02: 127.0.0.1:8001
+    haproxy_redirects:
+      foo:
+        domain: foo.example.com
+        destination: http://test.example.com
+        letsencrypt: no
+  roles:
+    - ansible-role-haproxy
