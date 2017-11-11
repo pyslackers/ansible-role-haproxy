@@ -6,22 +6,32 @@
     update_cache: yes
   when: ansible_distribution == 'Ubuntu'
   with_items:
-    - certbot/certbot
     - vbernat/haproxy-1.7
 
-- name: Install HAProxy & Certbot
+- name: Install HAProxy
   apt:
     name: "{{ item }}"
     state: latest
   with_items:
     - haproxy
-    - certbot
 
-- include_tasks: letsencrypt.yml
+- name: Generate backends certificates
+  include_role:
+    name: letsencrypt
+  vars:
+    domain: "{{ item.value.domain }}"
+    letsencrypt: "{{ item.value.letsencrypt }}"
+    webserver: haproxy
   with_dict: "{{ haproxy_backends }}"
   when: item.value.letsencrypt is defined and item.value.letsencrypt
 
-- include_tasks: letsencrypt.yml
+- name: Generate redirections certificates
+  include_role:
+    name: letsencrypt
+  vars:
+    domain: "{{ item.value.domain }}"
+    letsencrypt: "{{ item.value.letsencrypt }}"
+    webserver: haproxy
   with_dict: "{{ haproxy_redirects }}"
   when: item.value.letsencrypt is defined and item.value.letsencrypt
 
@@ -32,20 +42,6 @@
     mode: 0644
     validate: haproxy -f %s -c -q
   notify: Reload HAProxy
-
-- name: Post renew script
-  template:
-    src: etc/letsencrypt/post-renew.sh.j2
-    dest: /etc/letsencrypt/post-renew.sh
-    mode: 0744
-
-- name: Certificates autorenew cron
-  cron:
-    name: auto renew letsencrypt certificates
-    minute: 1
-    hour: 23
-    weekday: 0
-    job: '/usr/bin/certbot renew --preferred-challenges http --http-01-port {{ certbot_port }} --quiet --post-hook "/bin/bash /etc/letsencrypt/post-renew.sh"'
 
 - name: Enable HAProxy
   service:
