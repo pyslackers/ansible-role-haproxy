@@ -1,0 +1,8 @@
+chmod 755 /etc/letsencrypt/live
+
+for dir in $(ls -d /etc/letsencrypt/live/*)
+do
+    cat $dir/privkey.pem $dir/fullchain.pem > $dir/privkeyandcert.pem
+done
+
+systemctl reload haproxy.service

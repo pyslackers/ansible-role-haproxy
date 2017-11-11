@@ -1,0 +1,10 @@
+---
+
+haproxy_stats_ip: 127.0.0.1
+haproxy_stats_port: 8080
+redirect_http: false
+haproxy_redirects: {}
+haporxy_backends: {}
+default_backend: ''
+
+certbot_port: 32456

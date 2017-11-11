@@ -1,0 +1,50 @@
+---
+
+- name: Certbot PPA
+  apt_repository:
+    repo: ppa:certbot/certbot
+  when: ansible_distribution == 'Ubuntu'
+
+- name: Install HAProxy & Certbot
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - haproxy
+    - certbot
+
+- include_tasks: letsencrypt.yml
+  with_dict: "{{ haproxy_backends }}"
+  when: item.value.letsencrypt is defined and item.value.letsencrypt
+
+- include_tasks: letsencrypt.yml
+  with_dict: "{{ haproxy_redirects }}"
+  when: item.value.letsencrypt is defined and item.value.letsencrypt
+
+- name: Configure HAProxy
+  template:
+    src: etc/haproxy/haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: 0644
+    validate: haproxy -f %s -c -q
+  notify: Reload HAProxy
+
+- name: Post renew script
+  template:
+    src: etc/letsencrypt/post-renew.sh.j2
+    dest: /etc/letsencrypt/post-renew.sh
+    mode: 0744
+
+- name: Certificates autorenew cron
+  cron:
+    name: auto renew letsencrypt certificates
+    minute: 1
+    hour: 23
+    weekday: 0
+    job: '/usr/bin/certbot renew --preferred-challenges http --http-01-port {{ certbot_port }} --quiet --post-hook "/bin/bash /etc/letsencrypt/post-renew.sh"'
+
+- name: Enable HAProxy
+  service:
+    name: haproxy
+    state: started
+    enabled: yes
