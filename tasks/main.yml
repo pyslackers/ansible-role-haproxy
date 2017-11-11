@@ -1,9 +1,13 @@
 ---
 
-- name: Certbot PPA
+- name: Add PPA
   apt_repository:
-    repo: ppa:certbot/certbot
+    repo: "ppa:{{ item }}"
+    update_cache: yes
   when: ansible_distribution == 'Ubuntu'
+  with_items:
+    - certbot/certbot
+    - vbernat/haproxy-1.7
 
 - name: Install HAProxy & Certbot
   apt:
