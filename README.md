@@ -3,7 +3,7 @@ HAPRoxy & Letsencrypt
 
 [![Build Status](https://travis-ci.org/pyslackers/ansible-role-haproxy.svg?branch=master)](https://travis-ci.org/pyslackers/ansible-role-common)
 
-Ansible role to install and configure haproxy with letsencrypt certificates.
+Ansible role to install and configure haproxy.
 
 Role Variables
 --------------
@@ -22,6 +22,11 @@ Role Variables
 * `certbot_port`: Listening port for certbot during certificates renewal (default to `32456`).
 * `haproxy_stats_ip`: Listening IP for haproxy stats (default to `127.0.0.1`).
 * `haproxy_stats_port`: Listening port for haproxy stats (default to `8080`).
+
+Dependencies
+------------
+
+* `pyslackers.letsencrypt`: Letsencrypt certificate generation.
 
 Example Playbook
 ----------------

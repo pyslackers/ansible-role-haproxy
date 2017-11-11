@@ -6,5 +6,4 @@ redirect_http: false
 haproxy_redirects: {}
 haporxy_backends: {}
 default_backend: ''
-
 certbot_port: 32456
