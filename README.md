@@ -11,11 +11,11 @@ Role Variables
 * `default_backends`: Default backend.
 
 * `haproxy_backends`: Dict of backends.
-    * `domain`: Domain serving this backends.
+    * `domains`: List of domains serving this backends.
     * `letsencrypt`: Generate letsencrypt certificate for `domain` (use `staging` for the staging letsencrypt).
     * `servers`: Dict of servers for this backend (`key`: server name, `value`: domain/ip:port of the server)
 * `haproxy_redirects`: Dict of redirections.
-    * `domain`: Domain to redirect.
+    * `domains`: List of domains to redirect.
     * `destination`: Destination domain.
     * `letsencrypt`: Generate letsencrypt certificate for `domain` (use `staging` for the staging letsencrypt).
 
@@ -37,14 +37,16 @@ Example Playbook
     default_backend: test
     haproxy_backends:
       test:
-        domain: test.example.com
+        domains: 
+          - test.example.com
         letsencrypt: no
         servers:
           test-01: 127.0.0.1:8000
           test-02: 127.0.0.1:8001
     haproxy_redirects:
       foo:
-        domain: foo.example.com
+        domains: 
+          - foo.example.com
         destination: http://test.example.com
         letsencrypt: no
   roles: 

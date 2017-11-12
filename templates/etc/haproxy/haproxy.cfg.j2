@@ -55,7 +55,7 @@ frontend http
         redirect scheme https code 301 if !{ ssl_fc }
 
 frontend https
-        bind *:443 ssl{% for backend, config in haproxy_backends.items() if config.letsencrypt %} crt {{ config['domain'] }}/privkeyandcert.pem{% endfor %}{% for incoming, config in haproxy_redirects.items() if config.letsencrypt %} crt {{ config['domain'] }}/privkeyandcert.pem{% endfor %}
+        bind *:443 ssl{% for backend, config in haproxy_backends.items() if config.letsencrypt %} crt {{ config['domains'] | first }}/privkeyandcert.pem{% endfor %}{% for incoming, config in haproxy_redirects.items() if config.letsencrypt %} crt {{ config['domains'] | first }}/privkeyandcert.pem{% endfor %}
 
 
         http-request set-header X-Forwarded-Scheme https
@@ -70,14 +70,19 @@ frontend https
         acl letsencrypt-acl path_beg /.well-known/acme-challenge/
         use_backend srv-letsencrypt if letsencrypt-acl
         {% for name, config in haproxy_redirects.items() %}
+        {% for domain in config['domains'] %}
 
-        acl is_{{ config['domain'] }} hdr_beg(host) -i {{ config['domain'] }}
-        redirect prefix {{ config['destination'] }} if is_{{ config['domain'] }}
+        acl is_{{ domain }} hdr_beg(host) -i {{ domain }}
+        redirect prefix {{ config['destination'] }} if is_{{ domain }}
         {% endfor %}
-        {% for backend, config in haproxy_backends.items() %}
+        {% endfor %}
 
-        acl is_{{ config['domain'] }} hdr_beg(host) -i {{ config['domain'] }}
-        use_backend srv-{{ backend }} if is_{{ config['domain'] }}
+        {% for backend, config in haproxy_backends.items() %}
+        {% for domain in config['domains'] %}
+
+        acl is_{{ domain }} hdr_beg(host) -i {{ domain }}
+        use_backend srv-{{ backend }} if is_{{ domain }}
+        {% endfor %}
         {% endfor %}
 
         default_backend srv-{{ default_backend }}
