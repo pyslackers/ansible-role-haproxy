@@ -3,7 +3,7 @@ HAPRoxy & Letsencrypt
 
 [![Build Status](https://travis-ci.org/pyslackers/ansible-role-haproxy.svg?branch=master)](https://travis-ci.org/pyslackers/ansible-role-common)
 
-Ansible role to install and configure haproxy.
+Ansible role to install and configure HAProxy.
 
 Role Variables
 --------------
