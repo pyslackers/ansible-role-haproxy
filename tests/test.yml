@@ -4,14 +4,16 @@
     default_backend: test
     haproxy_backends:
       test:
-        domain: test.example.com
+        domains:
+          - test.example.com
         letsencrypt: no
         servers:
           test-01: 127.0.0.1:8000
           test-02: 127.0.0.1:8001
     haproxy_redirects:
       foo:
-        domain: foo.example.com
+        domains:
+          - foo.example.com
         destination: http://test.example.com
         letsencrypt: no
   roles:
