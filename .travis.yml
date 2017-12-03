@@ -17,10 +17,6 @@ install:
   - docker exec --tty ${container_id} env TERM=xterm apt-get update -qq
   - docker ps
 
-  - docker exec --tty ${container_id} env TERM=xterm ls -la /etc/ansible/roles
-  # Install requirements
-  - docker exec --tty ${container_id} env TERM=xterm apt-get install -y curl
-
 script:
   # Run playbook.
   - docker exec --tty $container_id env TERM=xterm ansible-playbook /etc/ansible/roles/ansible-role-haproxy/tests/test.yml --syntax-check
@@ -29,5 +25,6 @@ script:
   - tail $idempotence | grep -q 'changed=0.*failed=0' && (printf 'Idempotence test pass') || (printf 'Idempotence test fail' && exit 1)
 
   # Tests
+  - docker exec --tty ${container_id} env TERM=xterm apt-get install -y curl
   - docker exec --tty ${container_id} env TERM=xterm curl localhost -v
   - docker exec --tty ${container_id} env TERM=xterm cat /etc/haproxy/haproxy.cfg
