@@ -55,8 +55,14 @@ frontend http
         redirect scheme https code 301 if !{ ssl_fc }
 
 frontend https
-        bind *:443 ssl{% for backend, config in haproxy_backends.items() if config.letsencrypt %} crt {{ config['domains'] | first }}/privkeyandcert.pem{% endfor %}{% for incoming, config in haproxy_redirects.items() if config.letsencrypt %} crt {{ config['domains'] | first }}/privkeyandcert.pem{% endfor %}
 
+        {% if haproxy_certificates %}
+
+        bind *:443 ssl crt {{ haproxy_certificates | join(' crt ') }}
+        {% else %}
+
+        bind *:443 ssl{% for backend, config in haproxy_backends.items() if config.letsencrypt %} crt {{ config['domains'] | first }}/privkeyandcert.pem{% endfor %}{% for incoming, config in haproxy_redirects.items() if config.letsencrypt %} crt {{ config['domains'] | first }}/privkeyandcert.pem{% endfor %}
+        {% endif %}
 
         http-request set-header X-Forwarded-Scheme https
         http-response set-header Strict-Transport-Security max-age=31536000;includeSubDomains;preload

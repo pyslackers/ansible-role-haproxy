@@ -5,5 +5,6 @@ haproxy_stats_port: 8080
 redirect_http: false
 haproxy_redirects: {}
 haporxy_backends: {}
+haproxy_certificates: []
 default_backend: ''
 certbot_port: 32456
