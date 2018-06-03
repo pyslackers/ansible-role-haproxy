@@ -22,6 +22,8 @@ Role Variables
 * `certbot_port`: Listening port for certbot during certificates renewal (default to `32456`).
 * `haproxy_stats_ip`: Listening IP for haproxy stats (default to `127.0.0.1`).
 * `haproxy_stats_port`: Listening port for haproxy stats (default to `8080`).
+* `haproxy_global`: Custom options for the `global` section (default to `{}`).
+* `haproxy_defaults`: Custom options for the `defaults` section (default to `{}`).
 
 Dependencies
 ------------

@@ -8,3 +8,5 @@ haporxy_backends: {}
 haproxy_certificates: []
 default_backend: ''
 certbot_port: 32456
+haproxy_defaults: {}
+haproxy_global: {}
