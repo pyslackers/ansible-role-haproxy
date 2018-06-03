@@ -23,6 +23,9 @@ global
 
         tune.ssl.default-dh-param 2048
 
+        {% for key, value in haproxy_global.items() %}
+        {{ key }} {{ value }}
+        {% endfor %}
 
 defaults
         log     global
@@ -44,6 +47,9 @@ defaults
         errorfile 503 /etc/haproxy/errors/503.http
         errorfile 504 /etc/haproxy/errors/504.http
 
+        {% for key, value in haproxy_defaults.items() %}
+        {{ key }} {{ value }}
+        {% endfor %}
 
 frontend http
         bind *:80
