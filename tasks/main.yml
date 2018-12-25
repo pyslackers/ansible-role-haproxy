@@ -10,10 +10,8 @@
 
 - name: Install HAProxy
   apt:
-    name: "{{ item }}"
+    name: haproxy
     state: latest
-  with_items:
-    - haproxy
 
 - name: Generate backends certificates
   include_role:
